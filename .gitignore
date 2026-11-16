@@ -158,6 +158,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env.*
+!.env.example
 
 # Spyder project settings
 .spyderproject
@@ -218,3 +220,24 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# SkillForge local database backups
+.local-backups/
+*.dump
+*.backup
+*.sql.gz
+
+# Frontend dependencies and generated files
+node_modules/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
+
+# Local configuration and databases
+*.sqlite
+*.sqlite3
+*.db
+
+# OS-generated files
+.DS_Store
+Thumbs.db

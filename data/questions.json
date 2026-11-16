@@ -1,0 +1,377 @@
+[
+  {
+    "title": "Array Indexing",
+    "concept": "Arrays",
+    "difficulty": "easy",
+    "description": "What is the time complexity of accessing an array element by its index?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(1)",
+      "O(n²)"
+    ],
+    "correct_answer": 2,
+    "question_key": "arrays-001",
+    "explanation": "Index access is O(1): the array computes the location of a slot directly rather than scanning earlier elements. This assumes constant-cost indexing into a conventional array."
+  },
+  {
+    "title": "Array Insertion",
+    "concept": "Arrays",
+    "difficulty": "easy",
+    "description": "What is the worst-case time complexity of inserting an element at the beginning of an array?",
+    "options": [
+      "O(1)",
+      "O(n)",
+      "O(log n)",
+      "O(n log n)"
+    ],
+    "correct_answer": 1,
+    "question_key": "arrays-002",
+    "explanation": "Inserting at the beginning requires shifting up to n existing elements to make room, so the worst-case time is O(n). A dynamic array may also need to resize."
+  },
+  {
+    "title": "Array Traversal",
+    "concept": "Arrays",
+    "difficulty": "easy",
+    "description": "How many elements are visited when traversing an array of size n exactly once?",
+    "options": [
+      "n",
+      "n²",
+      "log n",
+      "n/2"
+    ],
+    "correct_answer": 0,
+    "question_key": "arrays-003",
+    "explanation": "A complete traversal visits each of the n elements once, so exactly n elements are visited. There is no nested traversal in this operation."
+  },
+  {
+    "title": "Big O Notation",
+    "concept": "Time Complexity",
+    "difficulty": "easy",
+    "description": "What does Big O notation commonly describe in algorithm analysis?",
+    "options": [
+      "Exact runtime",
+      "Asymptotic upper bound",
+      "Memory address",
+      "Number of variables"
+    ],
+    "correct_answer": 1,
+    "question_key": "time-complexity-001",
+    "explanation": "Big O describes an asymptotic upper bound on growth as input size increases. It does not give exact runtime in seconds, and the input case being analyzed must be stated separately."
+  },
+  {
+    "title": "Nested Loops",
+    "concept": "Time Complexity",
+    "difficulty": "medium",
+    "description": "Two nested loops each execute n times. What is their total time complexity?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n²)",
+      "O(1)"
+    ],
+    "correct_answer": 2,
+    "question_key": "time-complexity-002",
+    "explanation": "If each loop executes n times for every iteration of its enclosing loop, the body runs n times n, or n squared times. With constant-cost body work, the total is O(n^2)."
+  },
+  {
+    "title": "Logarithmic Complexity",
+    "concept": "Time Complexity",
+    "difficulty": "medium",
+    "description": "An algorithm repeatedly halves its input size. What is its typical time complexity?",
+    "options": [
+      "O(n²)",
+      "O(n)",
+      "O(log n)",
+      "O(2ⁿ)"
+    ],
+    "correct_answer": 2,
+    "question_key": "time-complexity-003",
+    "explanation": "Repeated halving reaches a constant size after about log base 2 of n steps. With constant work per step, the typical running time is O(log n); halving alone does not bound additional work done at each step."
+  },
+  {
+    "title": "Linear Search Basics",
+    "concept": "Linear Search",
+    "difficulty": "easy",
+    "description": "Which approach does linear search use?",
+    "options": [
+      "Divide array into halves",
+      "Check elements sequentially",
+      "Sort before searching",
+      "Use a hash function"
+    ],
+    "correct_answer": 1,
+    "question_key": "linear-search-001",
+    "explanation": "Linear search checks elements sequentially until it finds the target or reaches the end. It does not require sorting, halving the search interval, or hashing."
+  },
+  {
+    "title": "Linear Search Worst Case",
+    "concept": "Linear Search",
+    "difficulty": "easy",
+    "description": "What is the worst-case time complexity of linear search?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n²)"
+    ],
+    "correct_answer": 2,
+    "question_key": "linear-search-002",
+    "explanation": "The target may be absent or at the last position, requiring up to n checks. Assuming constant-cost comparisons, this gives O(n) worst-case time."
+  },
+  {
+    "title": "Linear Search Best Case",
+    "concept": "Linear Search",
+    "difficulty": "easy",
+    "description": "When does linear search achieve its best-case time complexity?",
+    "options": [
+      "Target is first",
+      "Target is last",
+      "Target is absent",
+      "Array is reversed"
+    ],
+    "correct_answer": 0,
+    "question_key": "linear-search-003",
+    "explanation": "If the target is the first element, linear search succeeds after one comparison, giving O(1) best-case time. A last or absent target requires scanning the sequence."
+  },
+  {
+    "title": "Binary Search Requirement",
+    "concept": "Binary Search",
+    "difficulty": "easy",
+    "description": "What condition is required for standard binary search?",
+    "options": [
+      "Array is sorted",
+      "Array has unique values",
+      "Array has even length",
+      "Array contains positive values"
+    ],
+    "correct_answer": 0,
+    "question_key": "binary-search-001",
+    "explanation": "Binary search needs sorted data so a comparison with the midpoint can safely rule out one half. Duplicate values, odd lengths, and negative values are all compatible with standard binary search."
+  },
+  {
+    "title": "Binary Search Complexity",
+    "concept": "Binary Search",
+    "difficulty": "easy",
+    "description": "What is the worst-case time complexity of binary search?",
+    "options": [
+      "O(n)",
+      "O(n²)",
+      "O(log n)",
+      "O(1)"
+    ],
+    "correct_answer": 2,
+    "question_key": "binary-search-002",
+    "explanation": "Each comparison discards roughly half of the remaining sorted search interval. This gives O(log n) worst-case comparisons for constant-cost random access and comparisons."
+  },
+  {
+    "title": "Binary Search Midpoint",
+    "concept": "Binary Search",
+    "difficulty": "medium",
+    "description": "Why is mid = low + (high - low) // 2 often preferred over (low + high) // 2?",
+    "options": [
+      "Prevents integer overflow in fixed-width integer types",
+      "Makes searching faster",
+      "Works only for recursion",
+      "Sorts the array"
+    ],
+    "correct_answer": 0,
+    "question_key": "binary-search-003",
+    "explanation": "In fixed-width integer types, low + high can overflow even when both valid nonnegative indices fit individually. low + (high - low) // 2 avoids that sum. Python integers are not limited to a fixed width."
+  },
+  {
+    "title": "Bubble Sort Comparison",
+    "concept": "Bubble Sort",
+    "difficulty": "easy",
+    "description": "Bubble sort primarily compares which elements?",
+    "options": [
+      "First and last",
+      "Adjacent elements",
+      "Random elements",
+      "Only middle elements"
+    ],
+    "correct_answer": 1,
+    "question_key": "bubble-sort-001",
+    "explanation": "Bubble sort compares adjacent elements and swaps out-of-order neighbors. A pass moves the largest remaining element toward the end of the unsorted region."
+  },
+  {
+    "title": "Bubble Sort Complexity",
+    "concept": "Bubble Sort",
+    "difficulty": "easy",
+    "description": "What is the worst-case time complexity of bubble sort?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n²)",
+      "O(n log n)"
+    ],
+    "correct_answer": 2,
+    "question_key": "bubble-sort-002",
+    "explanation": "In the worst case bubble sort makes a quadratic number of comparisons across its passes, giving O(n^2) time. Early stopping improves the best case but does not remove this worst case."
+  },
+  {
+    "title": "Bubble Sort Optimization",
+    "concept": "Bubble Sort",
+    "difficulty": "medium",
+    "description": "What can an optimized bubble sort do if no swaps occur during a pass?",
+    "options": [
+      "Restart sorting",
+      "Stop early",
+      "Reverse the array",
+      "Increase comparisons"
+    ],
+    "correct_answer": 1,
+    "question_key": "bubble-sort-003",
+    "explanation": "A complete pass with no swaps means every adjacent pair is already in order, so the whole sequence is sorted and the algorithm can stop. One swap-free comparison alone is not sufficient."
+  },
+  {
+    "title": "Merge Sort Strategy",
+    "concept": "Merge Sort",
+    "difficulty": "easy",
+    "description": "Which algorithmic strategy is used by merge sort?",
+    "options": [
+      "Greedy",
+      "Backtracking",
+      "Divide and conquer",
+      "Dynamic programming"
+    ],
+    "correct_answer": 2,
+    "question_key": "merge-sort-001",
+    "explanation": "Merge sort uses divide and conquer: split the input into smaller halves, sort them recursively, then merge the sorted results. It does not solve this task through greedy choice or backtracking."
+  },
+  {
+    "title": "Merge Sort Complexity",
+    "concept": "Merge Sort",
+    "difficulty": "medium",
+    "description": "What is the typical time complexity of merge sort?",
+    "options": [
+      "O(n²)",
+      "O(n log n)",
+      "O(n)",
+      "O(log n)"
+    ],
+    "correct_answer": 1,
+    "question_key": "merge-sort-002",
+    "explanation": "Typical array merge sort has O(log n) levels of splitting and O(n) total merging work at each level, giving O(n log n) time under constant-cost comparisons."
+  },
+  {
+    "title": "Merge Sort Merge Step",
+    "concept": "Merge Sort",
+    "difficulty": "medium",
+    "description": "What happens during the merge step of merge sort?",
+    "options": [
+      "Two sorted subarrays are combined",
+      "Array is randomly shuffled",
+      "Largest element is deleted",
+      "Only adjacent elements are swapped"
+    ],
+    "correct_answer": 0,
+    "question_key": "merge-sort-003",
+    "explanation": "The merge step combines two already-sorted subarrays by repeatedly taking the smaller next element and then appending any remaining tail. Simply concatenating the halves is not generally sorted."
+  },
+  {
+    "title": "Recursion Base Case",
+    "concept": "Recursion",
+    "difficulty": "easy",
+    "description": "Why is a base case important in recursion?",
+    "options": [
+      "Increases recursion depth",
+      "Prevents unbounded recursive calls",
+      "Sorts the input",
+      "Reduces variable names"
+    ],
+    "correct_answer": 1,
+    "question_key": "recursion-001",
+    "explanation": "A base case returns an answer without another recursive call, preventing unbounded recursion when recursive steps move toward it. A base case alone is not enough if the recursive argument never approaches it."
+  },
+  {
+    "title": "Recursive Factorial",
+    "concept": "Recursion",
+    "difficulty": "easy",
+    "description": "What is factorial(4)?",
+    "options": [
+      "12",
+      "16",
+      "24",
+      "32"
+    ],
+    "correct_answer": 2,
+    "question_key": "recursion-002",
+    "explanation": "factorial(4) is 4 * 3 * 2 * 1 = 24. Factorial multiplies the positive integers through n; it is not n squared or a repeated doubling operation."
+  },
+  {
+    "title": "Recursion Call Stack",
+    "concept": "Recursion",
+    "difficulty": "medium",
+    "description": "Which data structure is used to manage recursive function calls?",
+    "options": [
+      "Queue",
+      "Heap",
+      "Stack",
+      "Hash table"
+    ],
+    "correct_answer": 2,
+    "question_key": "recursion-003",
+    "explanation": "A call stack keeps active function frames, including arguments and the point at which each call should resume. Returning from a call restores the most recent unfinished call, following last-in, first-out order."
+  },
+  {
+    "title": "Sorting Stability",
+    "concept": "Sorting Fundamentals",
+    "difficulty": "medium",
+    "description": "What does stability mean in a sorting algorithm?",
+    "options": [
+      "Always O(n)",
+      "Preserves relative order of equal keys",
+      "Uses constant memory",
+      "Never compares elements"
+    ],
+    "correct_answer": 1,
+    "question_key": "sorting-fundamentals-001",
+    "explanation": "A stable sort preserves the original relative order of records with equal keys. Stability does not imply linear time, constant memory, or the absence of comparisons."
+  },
+  {
+    "title": "Comparison Sorting",
+    "concept": "Sorting Fundamentals",
+    "difficulty": "easy",
+    "description": "Which of the following is a comparison-based sorting algorithm?",
+    "options": [
+      "Counting Sort",
+      "Radix Sort",
+      "Merge Sort",
+      "Bucket Sort"
+    ],
+    "correct_answer": 2,
+    "question_key": "sorting-fundamentals-002",
+    "explanation": "Merge sort orders items by comparing keys while merging sorted halves. Counting and radix sorts instead exploit key representations; bucket sorting distributes keys into ranges and may use a comparison sort inside individual buckets."
+  },
+  {
+    "title": "In-place Sorting",
+    "concept": "Sorting Fundamentals",
+    "difficulty": "medium",
+    "description": "What does in-place sorting generally mean?",
+    "options": [
+      "Uses O(1) auxiliary space",
+      "Always O(n log n)",
+      "Requires recursion",
+      "Uses extra array of size n"
+    ],
+    "correct_answer": 0,
+    "question_key": "sorting-fundamentals-003",
+    "explanation": "In-place sorting generally uses O(1) auxiliary storage beyond the input. This describes memory usage, not runtime; some conventions allow a small recursion stack, so the convention should be stated."
+  },
+  {
+    "title": "Sorting Lower Bound",
+    "concept": "Sorting Fundamentals",
+    "difficulty": "hard",
+    "description": "What is the worst-case lower bound for general comparison-based sorting?",
+    "options": [
+      "Ω(n)",
+      "Ω(log n)",
+      "Ω(n log n)",
+      "Ω(n²)"
+    ],
+    "correct_answer": 2,
+    "question_key": "sorting-fundamentals-004",
+    "explanation": "General comparison sorting needs Omega(n log n) comparisons in the worst case: a binary decision tree must distinguish n factorial possible orders of distinct keys. Non-comparison methods with restricted keys use different assumptions."
+  }
+]

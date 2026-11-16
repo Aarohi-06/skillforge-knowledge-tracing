@@ -1,0 +1,561 @@
+{
+  "schema_version": 1,
+  "content_version": "1.0.0",
+  "lessons": [
+    {
+      "concept_name": "Arrays",
+      "overview": {
+        "explanation": "An array stores an ordered sequence of elements that can be accessed by position. In a conventional array, equal-size slots occupy consecutive memory locations. Python lists provide an array-like interface and store references in a resizable backing array.",
+        "why_it_matters": "Arrays underpin searching and sorting. Understanding positions helps you avoid indexing errors and reason about data movement."
+      },
+      "key_ideas": [
+        {
+          "term": "Index",
+          "explanation": "A zero-based position: the first element is at index 0 and the last at n - 1 for n elements."
+        },
+        {
+          "term": "Random access",
+          "explanation": "An index identifies a slot directly; accessing it does not require scanning preceding elements."
+        },
+        {
+          "term": "Size and capacity",
+          "explanation": "Size counts stored elements; capacity is allocated storage. A fixed-size array cannot grow without replacement, while a dynamic array may resize."
+        }
+      ],
+      "worked_example": {
+        "title": "Access and insert",
+        "steps": [
+          "Start with [10, 20, 40]; index 2 contains 40.",
+          "Insert 15 at index 1. The old elements 20 and 40 shift right.",
+          "The new sequence is [10, 15, 20, 40]."
+        ],
+        "language": "python",
+        "code": "values = [10, 20, 40]\nprint(values[2])\nvalues.insert(1, 15)\nprint(values)",
+        "expected_output": "40\n[10, 15, 20, 40]"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Using n as the last index",
+          "explanation": "For n elements, index n is outside the array. In Python negative indices have a separate meaning; they do not change zero-based positive indexing."
+        },
+        {
+          "mistake": "Treating every insertion as constant time",
+          "explanation": "An insertion near the front shifts following elements. A dynamic-array append is amortized constant time but a resizing append can be linear."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is the number of elements; slot access and element movement take constant time.",
+          "Auxiliary space excludes the input array; Python list resizing can temporarily allocate linear storage."
+        ],
+        "notes": "Storing n elements takes O(n) space. The insertion bound below describes a fixed-capacity array with spare room, excluding resizing.",
+        "operations": [
+          {
+            "operation": "Access by valid index",
+            "time": "O(1)",
+            "auxiliary_space": "O(1)"
+          },
+          {
+            "operation": "Traverse all elements",
+            "time": "O(n)",
+            "auxiliary_space": "O(1)"
+          },
+          {
+            "operation": "Insert at beginning, with spare capacity",
+            "time": "O(n)",
+            "auxiliary_space": "O(1)"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: list operations",
+          "url": "https://docs.python.org/3/tutorial/datastructures.html",
+          "resource_type": "documentation",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    },
+    {
+      "concept_name": "Time Complexity",
+      "overview": {
+        "explanation": "Time complexity describes how an operation count grows with input size, rather than predicting elapsed seconds. Big-O is an asymptotic upper bound; a tight bound describes the growth more precisely.",
+        "why_it_matters": "It helps compare approaches as inputs grow and identify expensive loops before implementation."
+      },
+      "key_ideas": [
+        {
+          "term": "Input size",
+          "explanation": "Define n before counting work: it might be array length or the number of records."
+        },
+        {
+          "term": "Growth rates",
+          "explanation": "Constant, logarithmic, linear, and quadratic growth describe different scaling behavior. Constants and lower-order terms do not determine asymptotic growth."
+        },
+        {
+          "term": "Cases",
+          "explanation": "Best, worst, and average case describe different inputs. Big-O does not automatically mean worst case; state the case explicitly."
+        }
+      ],
+      "worked_example": {
+        "title": "Count nested-loop work",
+        "steps": [
+          "Set n = 3. The outer loop executes three times.",
+          "For each outer iteration the inner loop executes three times, making nine increments.",
+          "For general n there are n * n increments, giving quadratic time under constant-cost arithmetic."
+        ],
+        "language": "python",
+        "code": "n = 3\ncount = 0\nfor i in range(n):\n    for j in range(n):\n        count += 1\nprint(count)",
+        "expected_output": "9"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Multiplying the costs of sequential loops",
+          "explanation": "Two separate n-step loops add to 2n work, which is O(n); independent nested n-step loops multiply to n squared."
+        },
+        {
+          "mistake": "Reading Big-O as exact seconds",
+          "explanation": "Hardware, implementation, and input details affect timing. An asymptotic bound describes growth, not a stopwatch measurement."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is a nonnegative integer; counting and loop control are treated as constant-cost operations.",
+          "Space counts a constant number of machine-word variables, excluding input."
+        ],
+        "notes": "Time Complexity is an analysis topic and has no single runtime of its own. Repeatedly halving a search interval typically takes O(log n) iterations.",
+        "operations": [
+          {
+            "operation": "The independent nested loops in this example",
+            "time": "O(n^2)",
+            "auxiliary_space": "O(1)"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Runestone: Big-O notation",
+          "url": "https://runestone.academy/ns/books/published/pythonds/AlgorithmAnalysis/BigONotation.html",
+          "resource_type": "interactive_textbook",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    },
+    {
+      "concept_name": "Linear Search",
+      "overview": {
+        "explanation": "Linear search examines elements sequentially until it finds the target or exhausts the sequence. It works even when the array is unsorted.",
+        "why_it_matters": "It is a simple, reliable baseline and is useful when sorting would cost more than a small number of searches."
+      },
+      "key_ideas": [
+        {
+          "term": "Sequential scan",
+          "explanation": "Use array indices to inspect one element at a time."
+        },
+        {
+          "term": "Result contract",
+          "explanation": "This lesson returns the first matching zero-based index, or -1 if there is no match."
+        },
+        {
+          "term": "Early return",
+          "explanation": "Stop at the first match when the contract requests only one occurrence."
+        }
+      ],
+      "worked_example": {
+        "title": "Find a target in an unsorted array",
+        "steps": [
+          "Search [7, 2, 9, 4] for 9. Index 0 contains 7, so continue.",
+          "Index 1 contains 2, so continue. Index 2 contains 9, so return 2.",
+          "If every element were checked without a match, return -1."
+        ],
+        "language": "python",
+        "code": "def linear_search(values, target):\n    for index, value in enumerate(values):\n        if value == target:\n            return index\n    return -1\n\nprint(linear_search([7, 2, 9, 4], 9))",
+        "expected_output": "2"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Returning not-found inside the loop after one mismatch",
+          "explanation": "A later element may match. Return -1 only after the entire scan finishes."
+        },
+        {
+          "mistake": "Assuming the input must be sorted",
+          "explanation": "Sequential search needs no ordering. Sorting first adds work and can change the original indices."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is the sequence length; indexing and equality comparisons take O(1).",
+          "The scan is iterative and does not copy the sequence."
+        ],
+        "notes": "Best case finds the first element. Worst case checks every element, including an unsuccessful search.",
+        "operations": [
+          {
+            "operation": "Best-case search",
+            "time": "O(1)",
+            "auxiliary_space": "O(1)"
+          },
+          {
+            "operation": "Worst-case search",
+            "time": "O(n)",
+            "auxiliary_space": "O(1)"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Runestone: sequential search",
+          "url": "https://runestone.academy/ns/books/published/pythonds/SortSearch/TheSequentialSearch.html",
+          "resource_type": "interactive_textbook",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    },
+    {
+      "concept_name": "Binary Search",
+      "overview": {
+        "explanation": "Binary search locates a target in sorted data by comparing the middle element and discarding the half that cannot contain the target. It builds on array indexing and the search result contract used by linear search.",
+        "why_it_matters": "For large sorted arrays, it reduces the number of comparisons dramatically compared with a full scan."
+      },
+      "key_ideas": [
+        {
+          "term": "Sorted precondition",
+          "explanation": "The array must be sorted using the same ordering as the comparisons."
+        },
+        {
+          "term": "Search interval",
+          "explanation": "With inclusive bounds low and high, any remaining match lies between them. Continue while low <= high."
+        },
+        {
+          "term": "Progress",
+          "explanation": "After a non-matching midpoint, use mid + 1 or mid - 1 to exclude the tested element. Duplicates may yield any matching index in this version."
+        }
+      ],
+      "worked_example": {
+        "title": "Search a sorted array",
+        "steps": [
+          "Search [2, 5, 8, 12, 16] for 12, with low = 0 and high = 4.",
+          "The midpoint is 2 and its value is 8. Discard indices 0 through 2, setting low = 3.",
+          "The next midpoint is 3 and its value is 12. Return index 3."
+        ],
+        "language": "python",
+        "code": "def binary_search(values, target):\n    low, high = 0, len(values) - 1\n    while low <= high:\n        mid = low + (high - low) // 2\n        if values[mid] == target:\n            return mid\n        if values[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1\n\nprint(binary_search([2, 5, 8, 12, 16], 12))",
+        "expected_output": "3"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Searching an unsorted array",
+          "explanation": "Discarding half is justified only by ordering. Without it, a discarded half may contain the target."
+        },
+        {
+          "mistake": "Keeping mid as a bound after a mismatch",
+          "explanation": "The interval may stop shrinking and loop forever. Exclude the midpoint after checking it."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is the length of an already-sorted random-access array; comparisons cost O(1).",
+          "Bounds are nonnegative valid indices. Sorting costs are not included."
+        ],
+        "notes": "The iterative version uses constant auxiliary space. low + (high - low) // 2 avoids the low + high overflow risk in fixed-width integer languages; Python integers do not have that fixed-width limit. Python bisect finds insertion points, so equality still needs checking when using it for membership.",
+        "operations": [
+          {
+            "operation": "Worst-case iterative search",
+            "time": "O(log n) for n >= 2",
+            "auxiliary_space": "O(1)"
+          },
+          {
+            "operation": "Best-case search",
+            "time": "O(1)",
+            "auxiliary_space": "O(1)"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Python bisect: binary search and insertion points",
+          "url": "https://docs.python.org/3/library/bisect.html",
+          "resource_type": "documentation",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    },
+    {
+      "concept_name": "Bubble Sort",
+      "overview": {
+        "explanation": "Bubble sort repeatedly compares neighboring elements and swaps pairs that are out of order. After a complete left-to-right pass, the largest remaining value reaches the end of the unsorted region.",
+        "why_it_matters": "It makes sorting through comparisons and swaps easy to trace, and illustrates how an early-stop condition changes best-case work."
+      },
+      "key_ideas": [
+        {
+          "term": "Adjacent swap",
+          "explanation": "Compare indices i and i + 1, swapping only if the left value is larger for ascending order."
+        },
+        {
+          "term": "Shrinking region",
+          "explanation": "Each pass fixes one largest remaining value, so later passes can stop earlier."
+        },
+        {
+          "term": "Stability and early stopping",
+          "explanation": "Swapping only strictly out-of-order pairs preserves equal-key order. A pass with no swaps means the sequence is sorted."
+        }
+      ],
+      "worked_example": {
+        "title": "Sort with adjacent swaps",
+        "steps": [
+          "Start [5, 1, 4, 2]. The first pass yields [1, 4, 2, 5].",
+          "The second pass compares the first three elements and yields [1, 2, 4, 5].",
+          "The next pass makes no swap, so the optimized algorithm stops."
+        ],
+        "language": "python",
+        "code": "values = [5, 1, 4, 2]\nfor end in range(len(values) - 1, 0, -1):\n    swapped = False\n    for i in range(end):\n        if values[i] > values[i + 1]:\n            values[i], values[i + 1] = values[i + 1], values[i]\n            swapped = True\n    if not swapped:\n        break\nprint(values)",
+        "expected_output": "[1, 2, 4, 5]"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Stopping after a single swap-free comparison",
+          "explanation": "One ordered adjacent pair says nothing about the rest. Only a full pass without swaps justifies stopping."
+        },
+        {
+          "mistake": "Swapping equal keys unnecessarily",
+          "explanation": "Using >= can reverse equal-key records and lose stability. Use > for the stable ascending version."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is the number of elements; comparisons and swaps cost O(1).",
+          "The implementation modifies the array in place and uses the no-swaps optimization."
+        ],
+        "notes": "Without the early-stop optimization, even sorted input takes quadratic comparisons. The optimized version still has quadratic worst-case time.",
+        "operations": [
+          {
+            "operation": "Worst-case sorting",
+            "time": "O(n^2)",
+            "auxiliary_space": "O(1)"
+          },
+          {
+            "operation": "Best case, already sorted",
+            "time": "O(n)",
+            "auxiliary_space": "O(1)"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Runestone: bubble sort",
+          "url": "https://runestone.academy/ns/books/published/pythonds/SortSearch/TheBubbleSort.html",
+          "resource_type": "interactive_textbook",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    },
+    {
+      "concept_name": "Merge Sort",
+      "overview": {
+        "explanation": "Merge sort divides an array into smaller halves, recursively sorts them, and merges sorted halves into one sorted result. Arrays provide the data representation; recursion supplies the repeated smaller calls and base case.",
+        "why_it_matters": "It offers predictable O(n log n) sorting time and shows how combining small solved problems produces a larger solution."
+      },
+      "key_ideas": [
+        {
+          "term": "Base case",
+          "explanation": "An empty or single-element array is already sorted."
+        },
+        {
+          "term": "Merge",
+          "explanation": "Compare the first unused item of each sorted half and append the smaller one. Append the remaining tail when one half is exhausted."
+        },
+        {
+          "term": "Stability",
+          "explanation": "Choose the left half first on equal keys to preserve the relative order of equal-key records."
+        }
+      ],
+      "worked_example": {
+        "title": "Split, sort, and merge",
+        "steps": [
+          "Split [7, 3, 9, 1, 4, 2] into [7, 3, 9] and [1, 4, 2], then split recursively.",
+          "Merging small sorted pieces gives sorted halves [3, 7, 9] and [1, 2, 4].",
+          "Compare the heads repeatedly to obtain [1, 2, 3, 4, 7, 9]."
+        ],
+        "language": "python",
+        "code": "def merge_sort(values):\n    if len(values) <= 1:\n        return values[:]\n    mid = len(values) // 2\n    left = merge_sort(values[:mid])\n    right = merge_sort(values[mid:])\n    merged = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            merged.append(left[i])\n            i += 1\n        else:\n            merged.append(right[j])\n            j += 1\n    merged.extend(left[i:])\n    merged.extend(right[j:])\n    return merged\n\nprint(merge_sort([7, 3, 9, 1, 4, 2]))",
+        "expected_output": "[1, 2, 3, 4, 7, 9]"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Concatenating sorted halves instead of merging",
+          "explanation": "Each half is internally sorted, but values from different halves can interleave. Concatenation alone does not sort them."
+        },
+        {
+          "mistake": "Forgetting remaining items after the comparison loop",
+          "explanation": "One half can still contain elements after the other is exhausted. Append that tail or values disappear."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is array length; comparisons cost O(1) and list append has amortized O(1) cost.",
+          "This array implementation allocates slices and merged arrays; it is not an in-place merge sort."
+        ],
+        "notes": "For n >= 2, balanced splitting has logarithmic depth and linear total merging work per level. Peak auxiliary storage is O(n), including slices and output buffers; the call stack adds O(log n). Total allocation over the run can exceed peak space.",
+        "operations": [
+          {
+            "operation": "This merge sort, best and worst case",
+            "time": "O(n log n)",
+            "auxiliary_space": "O(n)"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Runestone: merge sort",
+          "url": "https://runestone.academy/ns/books/published/pythonds/SortSearch/TheMergeSort.html",
+          "resource_type": "interactive_textbook",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    },
+    {
+      "concept_name": "Recursion",
+      "overview": {
+        "explanation": "Recursion solves a problem by calling a function on a smaller version of the problem. A base case supplies an answer directly, and returning calls combine the smaller answers.",
+        "why_it_matters": "It expresses nested and divide-and-conquer computations clearly and prepares you to follow merge sort."
+      },
+      "key_ideas": [
+        {
+          "term": "Base case",
+          "explanation": "A condition that returns without another recursive call."
+        },
+        {
+          "term": "Progress toward termination",
+          "explanation": "Each recursive call must move toward a base case for the supported input domain."
+        },
+        {
+          "term": "Call stack",
+          "explanation": "Each active call keeps its own arguments and local state until its child call returns."
+        }
+      ],
+      "worked_example": {
+        "title": "Compute factorial of four",
+        "steps": [
+          "For a nonnegative integer, factorial(0) = 1 and factorial(n) = n * factorial(n - 1).",
+          "Calling factorial(4) expands to 4 * 3 * 2 * 1 * factorial(0).",
+          "Return 1 at the base case, then unwind to get 1, 2, 6, and finally 24."
+        ],
+        "language": "python",
+        "code": "def factorial(n):\n    if n < 0:\n        raise ValueError(\"n must be nonnegative\")\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(4))",
+        "expected_output": "24"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Omitting the base case or failing to approach it",
+          "explanation": "Calls continue until a recursion limit or stack exhaustion rather than solving the problem."
+        },
+        {
+          "mistake": "Ignoring call-stack space",
+          "explanation": "Even a function with few local variables keeps one frame per active call. Recursive factorial uses linear stack depth."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is a nonnegative integer small enough for the language recursion limit.",
+          "The conventional analysis counts each multiplication as O(1) and each frame as O(1); Python arbitrary-precision integer arithmetic adds bit costs for large factorials."
+        ],
+        "notes": "Recursion itself has no universal complexity. The number of calls and the work per call determine time; the maximum simultaneous depth contributes stack space. Python does not optimize tail calls away.",
+        "operations": [
+          {
+            "operation": "Factorial example under unit-cost arithmetic",
+            "time": "O(n)",
+            "auxiliary_space": "O(n) stack frames"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Runestone: what is recursion?",
+          "url": "https://runestone.academy/ns/books/published/pythonds/Recursion/WhatIsRecursion.html",
+          "resource_type": "interactive_textbook",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    },
+    {
+      "concept_name": "Sorting Fundamentals",
+      "overview": {
+        "explanation": "Sorting rearranges records according to a chosen key and ordering, such as ascending score. Records with equal keys may still have distinct identities. Arrays give us positions in which to compare and rearrange these records.",
+        "why_it_matters": "Sorted data is easier to browse and enables binary search. Choosing a sorting method requires considering time, memory, and equal-key ordering."
+      },
+      "key_ideas": [
+        {
+          "term": "Key and order",
+          "explanation": "A key is the value compared, such as a score. Decide ascending or descending order before sorting."
+        },
+        {
+          "term": "Stability",
+          "explanation": "A stable sort keeps the input relative order of records whose keys compare equal."
+        },
+        {
+          "term": "In-place and comparison-based",
+          "explanation": "In-place commonly means O(1) auxiliary storage, though conventions sometimes allow a small recursion stack. Comparison sorts obtain order through comparisons; counting and radix methods need extra key assumptions."
+        }
+      ],
+      "worked_example": {
+        "title": "Preserve order for equal scores",
+        "steps": [
+          "The input records are A with score 2, B with score 1, and C with score 2.",
+          "Sort ascending by score: B comes first. A and C have equal keys.",
+          "A stable sort leaves A ahead of C, producing the label order B, A, C."
+        ],
+        "language": "python",
+        "code": "records = [(\"A\", 2), (\"B\", 1), (\"C\", 2)]\nordered = sorted(records, key=lambda record: record[1])\nprint([record[0] for record in ordered])",
+        "expected_output": "['B', 'A', 'C']"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Assuming sorted output guarantees stability",
+          "explanation": "Keys can be sorted even if equal-key records have exchanged places. Stability is an additional property."
+        },
+        {
+          "mistake": "Applying the comparison lower bound to every sorting method",
+          "explanation": "The worst-case Omega(n log n) comparison bound assumes arbitrary keys ordered only by comparisons. Restricted integer keys enable methods with different cost models."
+        }
+      ],
+      "complexity": {
+        "assumptions": [
+          "n is the record count; comparisons and key extraction take O(1).",
+          "The lower bound refers to comparison-based sorting of arbitrary inputs with distinct keys; space and runtime otherwise depend on the algorithm."
+        ],
+        "notes": "Sorting is a broad task, not one algorithm. Stable does not imply in-place. Python sorted returns a new list and is stable; unlike the simple array merge sort lesson, its adaptive implementation can exploit existing runs.",
+        "operations": [
+          {
+            "operation": "Python sorted, worst case",
+            "time": "O(n log n)",
+            "auxiliary_space": "O(n)"
+          },
+          {
+            "operation": "Bubble sort, worst case",
+            "time": "O(n^2)",
+            "auxiliary_space": "O(1)"
+          },
+          {
+            "operation": "Array merge sort, worst case",
+            "time": "O(n log n)",
+            "auxiliary_space": "O(n)"
+          }
+        ]
+      },
+      "resources": [
+        {
+          "title": "Python sorting guide: keys and stability",
+          "url": "https://docs.python.org/3/howto/sorting.html",
+          "resource_type": "documentation",
+          "verification_status": "verified",
+          "verified_on": "2026-11-16"
+        }
+      ]
+    }
+  ]
+}
