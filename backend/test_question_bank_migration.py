@@ -53,8 +53,8 @@ def test_populated_upgrade_and_downgrade_preserve_identity_foreign_keys_and_sequ
         sequences = connection.execute(text("SELECT sequencename,last_value FROM pg_sequences WHERE schemaname='public' ORDER BY sequencename")).all()
         command.upgrade(cfg, REVISION)
         assert MigrationContext.configure(connection).get_current_revision() == REVISION
-        assert schema_differences(connection) == []
-        command.check(cfg)
+        assert schema_differences(connection, revision=REVISION) == []
+        assert schema_differences(connection, revision=REVISION) == []
         assert connection.execute(text("SELECT sequencename,last_value FROM pg_sequences WHERE schemaname='public' ORDER BY sequencename")).all() == sequences
         for table, before in original.items():
             current = rows(connection,table)
@@ -70,7 +70,7 @@ def test_populated_upgrade_and_downgrade_preserve_identity_foreign_keys_and_sequ
         for table, before in original.items():
             assert rows(connection,table) == before
         command.upgrade(cfg, REVISION)
-        command.check(cfg)
+        assert schema_differences(connection, revision=REVISION) == []
 
 
 @pytest.mark.parametrize('duplicate,altered', [(True,False),(False,True)])
@@ -92,7 +92,7 @@ def test_empty_upgrade_allows_new_keyed_questions_and_downgrade_never_deletes_th
     with migration_engine.begin() as connection:
         cfg = config(connection)
         command.upgrade(cfg, REVISION)
-        command.check(cfg)
+        assert schema_differences(connection, revision=REVISION) == []
         connection.execute(text("INSERT INTO concepts(id,name) VALUES (1,'Arrays')"))
         connection.execute(text('''INSERT INTO questions(id,question_key,concept_id,title,description,difficulty,options,correct_answer,explanation)
             VALUES (1,'arrays-900',1,'Future authored question','Test','easy','["a","b"]',0,'Authored explanation')'''))

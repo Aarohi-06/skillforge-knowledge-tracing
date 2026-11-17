@@ -212,3 +212,24 @@ adoption mapping, compatibility limits, backup/approval procedure and commands.
 Development is intentionally not upgraded automatically. The earlier Stage 4
 answer-key reconstruction limitation is superseded for migrated/new attempts by
 the Stage 9 feedback snapshots.
+
+## Stage 11 diagnostics
+
+Revision `0005_diagnostic_sessions` adds two empty tables for persistent diagnostic
+sessions and ordered question/attempt associations. Existing tables and records
+are not altered. See [DIAGNOSTIC_API.md](DIAGNOSTIC_API.md) for endpoints,
+transaction/idempotency rules, constraints, testing, and the separately approved
+development upgrade procedure. Development remains at 0004 during implementation.
+Downgrade removes session metadata but retains attempts and mastery; it loses
+resume and diagnostic-origin associations and must not be used as a routine
+production rollback. No development migration is automatic.
+
+## Stage 13 adaptive sessions
+
+Revision `0006_adaptive_sessions` adds empty adaptive session/assignment tables,
+persisted selection reasons and lifecycle/idempotency constraints without altering
+existing data or diagnostic tables. See [ADAPTIVE_API.md](ADAPTIVE_API.md) for
+selection policy, API contracts, constraints, limitations and the separately
+approved development upgrade procedure. Development remains at 0005 during
+implementation. Downgrade retains attempts/mastery but loses adaptive session
+metadata and origin associations; no development upgrade or rollback is automatic.

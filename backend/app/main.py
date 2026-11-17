@@ -25,12 +25,16 @@ from app.schemas import (
 from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
+from app.diagnostic_routes import router as diagnostic_router
+from app.adaptive_routes import router as adaptive_router
 
 app = FastAPI(
     title="SkillForge API",
     description="Adaptive DSA learning platform using Bayesian Knowledge Tracing",
     version="0.1.0"
 )
+app.include_router(diagnostic_router)
+app.include_router(adaptive_router)
 
 
 app.add_middleware(

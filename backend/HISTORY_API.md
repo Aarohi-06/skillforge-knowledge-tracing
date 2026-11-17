@@ -48,9 +48,11 @@ without rounding or recomputation. `snapshots_available` is true only when both
 values are present, including valid zero values. Legacy/partial snapshots stay
 NULL; clients must not fill them with initial mastery or interpolated estimates.
 
-All existing attempts have origin `ordinary_practice`. Future session features
-can extend the origin vocabulary without changing this response layout; this
-endpoint does not infer unsupported origins. No selected answer, correct-answer
+Attempts associated with a persisted diagnostic assignment have origin
+`diagnostic` (Stage 11); adaptive assignments yield `adaptive_practice` (Stage 13).
+All other attempts retain `ordinary_practice`. The one-to-one optional assignment
+joins preserve the response layout and pagination.
+No selected answer, correct-answer
 index, option content, username, or submission UUID is exposed.
 
 ## Pagination
@@ -78,7 +80,8 @@ Cursors are validated and scoped but unsigned: they are positions, not access
 tokens. The MVP's caller-supplied student ID is still not authentication or
 authorization. Public deployment requires a separately approved identity model.
 
-The history query joins questions once to resolve concept IDs. Query count is
+The history query joins questions once to resolve concept IDs and left-joins
+diagnostic and adaptive assignments through their unique attempt associations. Query count is
 bounded (student validation, optional concept validation, one page query), with
 no per-attempt database access. Existing indexes/schema are unchanged; larger
 datasets may later warrant a separately reviewed history index. Concept IDs are

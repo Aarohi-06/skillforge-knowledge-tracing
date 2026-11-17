@@ -90,15 +90,16 @@ def test_empty_database_upgrades_through_baseline_to_snapshots_without_pending_c
                 if expected_name:
                     assert item["name"] == expected_name
             # The concept/keyset query index is the sole non-unique index.
-            assert {index.name for index in table.indexes} == ({"ix_questions_concept_id_id"} if table.name == "questions" else set())
-            assert all(item.get("duplicates_constraint") or item["name"] == "ix_questions_concept_id_id" for item in inspector.get_indexes(table.name))
+            assert {index.name for index in table.indexes} == {item["name"] for item in inspector.get_indexes(table.name) if not item.get("duplicates_constraint")}
+            assert all(item.get("duplicates_constraint") or item["name"] in {index.name for index in table.indexes} for item in inspector.get_indexes(table.name))
             for column in table.columns:
                 actual = actual_columns[column.name]
                 assert actual["nullable"] == column.nullable
                 if not column.primary_key:
                     assert actual["default"] is None
                 else:
-                    assert connection.scalar(text("SELECT pg_get_serial_sequence(:table, 'id')"), {"table": table.name})
+                    sequence = connection.scalar(text("SELECT pg_get_serial_sequence(:table, 'id')"), {"table": table.name})
+                    assert bool(sequence) == (table.name not in {"diagnostic_sessions", "adaptive_sessions"})
 
         # Upgrading an already versioned schema is a no-op.
         command.upgrade(cfg, "head")
@@ -159,7 +160,7 @@ def test_cli_uses_environment_database_url(migration_engine):
             env=environment, check=True, capture_output=True, text=True,
         )
     with migration_engine.connect() as connection:
-        assert MigrationContext.configure(connection).get_current_revision() == "0004_question_bank"
+        assert MigrationContext.configure(connection).get_current_revision() == "0006_adaptive_sessions"
         assert schema_differences(connection) == []
 
 

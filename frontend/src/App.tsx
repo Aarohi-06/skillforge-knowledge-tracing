@@ -6,9 +6,12 @@ import { fetchQuestions, type Question } from './api/questions'
 import ProgressPage from './ProgressPage'
 import RecommendationsSection from './RecommendationsSection'
 import ConceptLearning from './ConceptLearning'
+import AttemptFeedback from './AttemptFeedback'
+import DiagnosticPage from './DiagnosticPage'
+import AdaptivePage from './AdaptivePage'
 
 type Page = 'dashboard' | 'practice' | 'progress'
-type View = Page | 'learn'
+type View = Page | 'learn' | 'diagnostic' | 'adaptive'
 
 function App() {
   const [activePage, setActivePage] = useState<View>('dashboard')
@@ -16,7 +19,7 @@ function App() {
   const [returnPage, setReturnPage] = useState<Page>('dashboard')
 
   function openLesson(concept: Concept) {
-    if (activePage !== 'learn') setReturnPage(activePage)
+    if (activePage !== 'learn' && activePage !== 'diagnostic' && activePage !== 'adaptive') setReturnPage(activePage)
     setLearningConcept(concept)
     setActivePage('learn')
   }
@@ -81,6 +84,9 @@ function App() {
         selected_answer: selectedAnswer,
       })
       const result = await submitAttempt(pendingAttempt.current)
+      if (result.question_id !== question.id || result.student_id !== 1 || result.selected_answer !== selectedAnswer) {
+        throw new Error('The submitted feedback did not match your answer.')
+      }
       setAttemptResult(result)
     } catch (error) {
       setSubmissionError(
@@ -201,6 +207,16 @@ function App() {
                 </div>
               ))}
             </dl>
+
+            <section className="dashboard-practice !mt-6" aria-labelledby="diagnostic-entry">
+              <div className="max-w-lg"><h3 id="diagnostic-entry" className="font-editorial text-2xl font-medium">Find your starting point</h3><p className="mt-3 text-sm text-muted">Explore six foundational questions in an ungraded diagnostic. Your saved mastery and learning history stay with you.</p></div>
+              <button className="button button-primary shrink-0 self-start" disabled={isSubmitting} onClick={() => setActivePage('diagnostic')}>Diagnostic Assessment</button>
+            </section>
+
+            <section className="dashboard-practice !mt-6 !bg-ice" aria-labelledby="adaptive-entry">
+              <div className="max-w-lg"><h3 id="adaptive-entry" className="font-editorial text-2xl font-medium">Follow your next learning step</h3><p className="mt-3 text-sm text-muted">Try a short adaptive session. The backend selects each eligible question using current mastery and previous attempts; ordinary Practice remains available for choosing your own concept.</p></div>
+              <button className="button button-primary shrink-0 self-start" disabled={isSubmitting} onClick={() => setActivePage('adaptive')}>Adaptive Practice</button>
+            </section>
 
             <RecommendationsSection
               onLearn={(recommendation) => openLesson(concepts.find((item) => item.id === recommendation.concept_id) ?? { id: recommendation.concept_id, name: recommendation.concept_name, description: null })}
@@ -366,29 +382,12 @@ function App() {
                       </p>
                     )}
 
-                    {attemptResult && (
-                      <div role="status" className="practice-feedback" data-correct={attemptResult.is_correct}>
-                        <p className="flex items-center gap-2 font-semibold">
-                          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><circle cx="12" cy="12" r="9" /><path d={attemptResult.is_correct ? 'M8 12l3 3 5-6' : 'M9 9l6 6 M15 9l-6 6'} /></svg>
-                          {attemptResult.is_correct ? 'Correct!' : 'Incorrect.'}
-                        </p>
-                        <p className="mt-3 text-sm text-ink">
-                          Updated BKT mastery: {(attemptResult.mastery_probability * 100).toFixed(1)}%
-                        </p>
-                        {currentQuestionIndex < questions.length - 1 ? (
-                          <button
-                            onClick={nextQuestion}
-                            className="button button-primary mt-5"
-                          >
-                            Next Question
-                          </button>
-                        ) : (
-                          <p className="mt-5 text-sm font-medium text-ink">
-                            You have completed all questions for this concept.
-                          </p>
-                        )}
-                      </div>
-                    )}
+                    <AttemptFeedback
+                      question={questions[currentQuestionIndex]}
+                      result={attemptResult}
+                      hasNext={currentQuestionIndex < questions.length - 1}
+                      onNext={nextQuestion}
+                    />
                   </div>
                 )}
               </div>
@@ -397,6 +396,10 @@ function App() {
         )}
 
 
+
+        {activePage === 'adaptive' && <AdaptivePage concepts={concepts} onDashboard={() => setActivePage('dashboard')} onProgress={() => setActivePage('progress')} />}
+
+        {activePage === 'diagnostic' && <DiagnosticPage concepts={concepts} onDashboard={() => setActivePage('dashboard')} onProgress={() => setActivePage('progress')} />}
 
         {activePage === 'learn' && learningConcept && (
           <ConceptLearning key={learningConcept.id} concept={learningConcept} concepts={concepts} onSelect={openLesson} backLabel={returnPage === 'progress' ? 'My Progress' : returnPage === 'practice' ? 'Practice' : 'Dashboard'}

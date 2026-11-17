@@ -11,6 +11,7 @@ export interface AttemptResponse extends Omit<AttemptCreate, 'submission_id'> {
   is_correct: boolean
   correct_answer: number
   mastery_probability: number
+  explanation: string | null
 }
 
 export type PendingAttempt = AttemptCreate & { submission_id: string }

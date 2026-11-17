@@ -6,7 +6,7 @@ export interface HistoryAttempt {
   is_correct: boolean
   mastery_before: number | null
   mastery_after: number | null
-  origin: 'ordinary_practice'
+  origin: 'ordinary_practice' | 'diagnostic' | 'adaptive_practice'
   snapshots_available: boolean
 }
 

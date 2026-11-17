@@ -19,7 +19,7 @@ test('a genuinely new attempt after reset receives a fresh UUID, even for the sa
 
 test('a lost response can be retried with the same UUID and payload', async (t) => {
   const sent = []
-  const feedback = { ...answer, attempt_id: 10, is_correct: true, correct_answer: 0, mastery_probability: 0.57647 }
+  const feedback = { ...answer, attempt_id: 10, is_correct: true, correct_answer: 0, mastery_probability: 0.57647, explanation: 'The recorded authored explanation.' }
   t.mock.method(globalThis, 'fetch', async (_url, options) => {
     sent.push(JSON.parse(options.body))
     if (sent.length === 1) throw new TypeError('Response lost')

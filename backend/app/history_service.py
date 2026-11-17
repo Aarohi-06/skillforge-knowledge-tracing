@@ -5,10 +5,10 @@ import json
 
 from fastapi import HTTPException
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, ValidationError
-from sqlalchemy import select, tuple_
+from sqlalchemy import case, select, tuple_
 from sqlalchemy.orm import Session
 
-from app.models import Attempt, Concept, Question, Student
+from app.models import AdaptiveAssignment, Attempt, Concept, DiagnosticAssignment, Question, Student
 from app.schemas import HistoryAttemptResponse, LearningHistoryResponse
 
 
@@ -52,7 +52,10 @@ def get_learning_history(
     query = select(
         Attempt.id.label("attempt_id"), Attempt.question_id, Question.concept_id,
         Attempt.attempted_at, Attempt.is_correct, Attempt.mastery_before, Attempt.mastery_after,
-    ).join(Question, Question.id == Attempt.question_id).where(Attempt.student_id == student_id)
+        case((AdaptiveAssignment.id.is_not(None), "adaptive_practice"), (DiagnosticAssignment.id.is_not(None), "diagnostic"), else_="ordinary_practice").label("origin"),
+    ).join(Question, Question.id == Attempt.question_id).outerjoin(
+        DiagnosticAssignment, DiagnosticAssignment.attempt_id == Attempt.id,
+    ).outerjoin(AdaptiveAssignment, AdaptiveAssignment.attempt_id == Attempt.id).where(Attempt.student_id == student_id)
     if concept_id is not None:
         query = query.where(Question.concept_id == concept_id)
     if cursor is not None:

@@ -55,8 +55,12 @@ def migrate_isolated_test_database():
                 command.stamp(cfg, "0002_attempt_mastery_snapshots")
             elif schema_differences(connection, revision="0003_idempotent_submissions") == []:
                 command.stamp(cfg, "0003_idempotent_submissions")
-            elif schema_differences(connection) == []:
+            elif schema_differences(connection, revision="0004_question_bank") == []:
                 command.stamp(cfg, "0004_question_bank")
+            elif schema_differences(connection, revision="0005_diagnostic_sessions") == []:
+                command.stamp(cfg, "0005_diagnostic_sessions")
+            elif schema_differences(connection) == []:
+                command.stamp(cfg, "0006_adaptive_sessions")
             else:
                 raise RuntimeError("Isolated test schema has unexpected drift; refusing automatic adoption")
         command.upgrade(cfg, "head")

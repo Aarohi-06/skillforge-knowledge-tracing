@@ -4,6 +4,7 @@ from uuid import UUID
 
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     DateTime,
     Float,
     ForeignKey,
@@ -13,6 +14,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     Uuid,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -151,4 +153,79 @@ class Mastery(Base):
             "concept_id",
             name="uq_student_concept"
         ),
+    )
+
+
+class DiagnosticSession(Base):
+    __tablename__ = "diagnostic_sessions"
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="in_progress")
+    restart_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    __table_args__ = (
+        CheckConstraint("status IN ('in_progress','completed','abandoned')", name="ck_diagnostic_status"),
+        CheckConstraint("(status = 'completed') = (completed_at IS NOT NULL)", name="ck_diagnostic_completion"),
+        UniqueConstraint("student_id", "restart_id", name="uq_diagnostic_restart"),
+        Index("ix_diagnostic_student_created", "student_id", "created_at"),
+        Index("uq_diagnostic_active_student", "student_id", unique=True, postgresql_where=text("status = 'in_progress'")),
+    )
+
+
+class DiagnosticAssignment(Base):
+    __tablename__ = "diagnostic_assignments"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    session_id: Mapped[UUID] = mapped_column(ForeignKey("diagnostic_sessions.id"), nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    question_id: Mapped[int] = mapped_column(ForeignKey("questions.id"), nullable=False)
+    attempt_id: Mapped[int | None] = mapped_column(ForeignKey("attempts.id"), nullable=True)
+    submission_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    __table_args__ = (
+        CheckConstraint("position >= 0 AND position < 6", name="ck_diagnostic_position"),
+        CheckConstraint("(attempt_id IS NULL) = (submission_id IS NULL)", name="ck_diagnostic_answer"),
+        UniqueConstraint("session_id", "position", name="uq_diagnostic_position"),
+        UniqueConstraint("session_id", "question_id", name="uq_diagnostic_question"),
+        UniqueConstraint("session_id", "submission_id", name="uq_diagnostic_submission"),
+        UniqueConstraint("attempt_id", name="uq_diagnostic_attempt"),
+    )
+
+
+class AdaptiveSession(Base):
+    __tablename__ = "adaptive_sessions"
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="in_progress")
+    completion_reason: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    restart_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    __table_args__ = (
+        CheckConstraint("status IN ('in_progress','completed','abandoned')", name="ck_adaptive_status"),
+        CheckConstraint("(status = 'completed') = (completed_at IS NOT NULL)", name="ck_adaptive_completion"),
+        CheckConstraint("(status = 'completed' AND completion_reason IS NOT NULL AND completion_reason IN ('target_reached','eligible_pool_exhausted')) OR (status <> 'completed' AND completion_reason IS NULL)", name="ck_adaptive_completion_reason"),
+        UniqueConstraint("student_id", "restart_id", name="uq_adaptive_restart"),
+        Index("ix_adaptive_student_created", "student_id", "created_at"),
+        Index("uq_adaptive_active_student", "student_id", unique=True, postgresql_where=text("status = 'in_progress'")),
+    )
+
+
+class AdaptiveAssignment(Base):
+    __tablename__ = "adaptive_assignments"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    session_id: Mapped[UUID] = mapped_column(ForeignKey("adaptive_sessions.id"), nullable=False)
+    selection_reason: Mapped[str] = mapped_column(Text, nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    question_id: Mapped[int] = mapped_column(ForeignKey("questions.id"), nullable=False)
+    attempt_id: Mapped[int | None] = mapped_column(ForeignKey("attempts.id"), nullable=True)
+    submission_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    __table_args__ = (
+        CheckConstraint("position >= 0 AND position < 5", name="ck_adaptive_position"),
+        CheckConstraint("(attempt_id IS NULL) = (submission_id IS NULL)", name="ck_adaptive_answer"),
+        UniqueConstraint("session_id", "position", name="uq_adaptive_position"),
+        UniqueConstraint("session_id", "question_id", name="uq_adaptive_question"),
+        UniqueConstraint("session_id", "submission_id", name="uq_adaptive_submission"),
+        UniqueConstraint("attempt_id", name="uq_adaptive_attempt"),
     )

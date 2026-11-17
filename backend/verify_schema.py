@@ -28,6 +28,24 @@ def schema_differences(connection, *, baseline=False, revision=None):
     })
     differences = compare_metadata(context, Base.metadata)
     inspector = inspect(connection)
+    if revision is not None and revision != "0005_diagnostic_sessions":
+        diagnostic_tables = {"diagnostic_sessions", "diagnostic_assignments"}
+        differences = [item for item in differences if not (
+            item[0] == "add_table" and item[1].name in diagnostic_tables
+        ) and not (
+            item[0] == "add_index" and item[1].table.name in diagnostic_tables
+        )]
+        for table in diagnostic_tables & set(inspector.get_table_names()):
+            differences.append(("unexpected_revision_table", table))
+    if revision is not None:
+        adaptive_tables = {"adaptive_sessions", "adaptive_assignments"}
+        differences = [item for item in differences if not (
+            item[0] == "add_table" and item[1].name in adaptive_tables
+        ) and not (
+            item[0] == "add_index" and item[1].table.name in adaptive_tables
+        )]
+        for table in adaptive_tables & set(inspector.get_table_names()):
+            differences.append(("unexpected_revision_table", table))
     if excluded or question_excluded:
         omitted = {"attempts": excluded, "questions": question_excluded}
         ignored_constraints = {"uq_question_key"} if question_excluded else set()
@@ -62,7 +80,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument("--baseline", action="store_true", help="Compare against the pre-snapshot baseline schema")
-    selection.add_argument("--revision", choices=["0001_existing_schema", "0002_attempt_mastery_snapshots", "0003_idempotent_submissions"], help="Compare against a supported older revision")
+    selection.add_argument("--revision", choices=["0001_existing_schema", "0002_attempt_mastery_snapshots", "0003_idempotent_submissions", "0004_question_bank", "0005_diagnostic_sessions"], help="Compare against a supported older revision")
     args = parser.parse_args()
     try:
         with engine.connect() as connection:

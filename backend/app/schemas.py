@@ -79,7 +79,7 @@ class HistoryAttemptResponse(BaseModel):
     is_correct: bool
     mastery_before: float | None
     mastery_after: float | None
-    origin: Literal["ordinary_practice"] = "ordinary_practice"
+    origin: Literal["ordinary_practice", "diagnostic", "adaptive_practice"] = "ordinary_practice"
     snapshots_available: bool
 
 
