@@ -1,90 +1,73 @@
-
 # SkillForge
 
-### Level up, one concept at a time.
+### Forge your skills. Unlock your potential.
 
-**SkillForge** is a full-stack adaptive Data Structures and Algorithms (DSA) learning platform designed to help students identify knowledge gaps, understand concept dependencies, and practice more effectively.
+**SkillForge** is a full-stack adaptive Data Structures and Algorithms (DSA) learning platform that helps students identify knowledge gaps, understand concept dependencies, and practice according to their current understanding.
 
-Instead of following a fixed sequence of questions, SkillForge uses **Bayesian Knowledge Tracing (BKT)** and a **graph-based prerequisite system** to estimate concept mastery and personalize practice recommendations.
+The platform combines **Bayesian Knowledge Tracing (BKT)** with a graph-based prerequisite system to estimate concept mastery, recommend learning topics, and personalize question selection.
 
-> **Project Status:** Functional MVP | Active Development  
-> **Deployment:** Planned
-
----
-
-## The Problem
-
-Traditional DSA practice platforms often focus on solving more questions rather than understanding which concepts a student needs to improve.
-
-Students may struggle with:
-- Identifying weak concepts.
-- Understanding prerequisite relationships between topics.
-- Choosing what to practice next.
-- Measuring conceptual progress over time.
-- Following a structured learning path.
-
-SkillForge addresses these challenges by combining knowledge tracing, prerequisite graphs, and adaptive question selection.
+**Status:** Functional MVP | Active Development
 
 ---
+
+## Overview
+
+Traditional DSA practice platforms often focus on solving questions without identifying the underlying concepts a student may be struggling with.
+
+SkillForge takes a concept-oriented approach by connecting practice performance with mastery estimation and prerequisite-aware learning recommendations.
+
+The platform provides an interactive skill tree, diagnostic assessments, adaptive practice sessions, learning resources, and progress visualization.
 
 ## Key Features
 
-### 1. Interactive Skill Tree
+### Interactive Skill Tree
 - Visualizes DSA concepts and their prerequisite relationships.
-- Helps learners understand how topics are connected.
-- Provides concept-level mastery information.
-- Supports structured learning recommendations.
+- Displays concept-level mastery and learning status.
+- Helps students understand topic dependencies and identify suitable learning paths.
 
-### 2. Diagnostic Assessment
-- Offers an initial assessment to evaluate a learner's understanding.
-- Uses six questions covering Arrays, Time Complexity, and Recursion.
-- Updates concept mastery estimates based on responses.
-- Supports persistent assessment sessions and progress recovery.
+### Diagnostic Assessment
+- Evaluates initial understanding through a structured assessment.
+- Updates mastery estimates based on student responses.
+- Maintains assessment progress across sessions.
 
-### 3. Bayesian Knowledge Tracing
-- Maintains an estimated mastery probability for each practiced concept.
-- Updates mastery after question submissions.
-- Accounts for correct and incorrect responses using BKT.
-- Provides the foundation for personalized recommendations.
+### Adaptive Practice
+- Selects questions using concept mastery, prerequisite eligibility, and practice history.
+- Updates recommendations as students answer questions.
+- Provides answer feedback and explanations.
+- Maintains persistent practice sessions.
 
-The current implementation uses predefined BKT parameters. Parameter estimation from real learning data is planned for future development.
+### Bayesian Knowledge Tracing
+- Estimates student understanding at the concept level.
+- Updates mastery probabilities after question attempts.
+- Uses probabilistic learner modeling to support personalized practice.
 
-### 4. Adaptive Practice
-- Selects questions based on estimated mastery, prerequisite eligibility, and practice history.
-- Presents one question at a time.
-- Updates the learner's progress after each answer.
-- Provides feedback and explanations.
-- Supports persistent five-question adaptive sessions.
-- Avoids repeating questions within a session.
+### Personalized Dashboard
+- Displays concept progress and learning recommendations.
+- Highlights concepts that may require additional attention.
+- Provides access to relevant practice activities.
 
-### 5. Personalized Dashboard
-- Displays concept-level progress.
-- Highlights learning recommendations.
-- Helps students identify areas requiring additional practice.
+### Learning History and Analytics
+- Records question attempts and mastery updates.
+- Visualizes changes in estimated mastery over time.
+- Helps learners review their progress.
 
-### 6. Progress Tracking
-- Records question attempts and learning history.
-- Displays changes in mastery estimates.
-- Provides visual progress representations.
-
-### 7. Concept Learning Resources
-- Provides concept-specific learning material and resources.
-- Connects learning content with practice and progress tracking.
+### Concept Learning Resources
+- Provides concept-specific learning resources.
+- Connects learning material with practice and progress tracking.
 
 ---
 
 ## Technology Stack
 
-| Layer | Technologies |
-|-------|-------------|
+| Component | Technologies |
+|---|---|
 | Frontend | React, TypeScript, Vite, Tailwind CSS |
 | Backend | Python, FastAPI |
 | Database | PostgreSQL |
 | ORM | SQLAlchemy |
 | Database Migrations | Alembic |
 | Graph Processing | NetworkX |
-| Knowledge Tracing | Bayesian Knowledge Tracing (BKT) |
-| Testing | Automated frontend and backend tests |
+| Adaptive Learning | Bayesian Knowledge Tracing (BKT) |
 | Version Control | Git, GitHub |
 
 ---
@@ -92,166 +75,160 @@ The current implementation uses predefined BKT parameters. Parameter estimation 
 ## System Architecture
 
 ```text
-                    Student
-                       |
-                       v
-              React + TypeScript
-                       |
-                       v
-                  FastAPI
-                       |
-          +------------+------------+
-          |            |            |
-          v            v            v
-     Diagnostic     Adaptive     Progress
-     Assessment     Practice     Tracking
-          |            |            |
-          +------------+------------+
-                       |
-                       v
-             Learning Logic
-                       |
-          +------------+------------+
-          |                         |
-          v                         v
-    Bayesian Knowledge       Prerequisite Graph
-       Tracing (BKT)             (NetworkX)
-          |                         |
-          +------------+------------+
-                       |
-                       v
-                  PostgreSQL
+                   Student
+                      |
+                      v
+             React + TypeScript
+                      |
+                      v
+                 FastAPI
+                      |
+          +-----------+-----------+
+          |           |           |
+          v           v           v
+     Diagnostic    Adaptive    Progress
+     Assessment    Practice    Tracking
+          |           |           |
+          +-----------+-----------+
+                      |
+                      v
+               Learning Engine
+                      |
+          +-----------+-----------+
+          |                       |
+          v                       v
+    Bayesian Knowledge     Prerequisite Graph
+       Tracing (BKT)           (NetworkX)
+          |                       |
+          +-----------+-----------+
+                      |
+                      v
+                 PostgreSQL
 ```
 
-The frontend communicates with the FastAPI backend through REST APIs. The backend manages questions, assessments, learning progress, prerequisite relationships, and mastery updates.
+The React frontend communicates with the FastAPI backend through REST APIs. The backend processes assessment responses, updates learner mastery, evaluates prerequisite relationships, and stores learning progress in PostgreSQL.
 
 ---
 
-## How Adaptive Learning Works
+## Adaptive Learning Workflow
 
-SkillForge combines two complementary approaches:
-
-**Bayesian Knowledge Tracing** estimates how well a student understands a concept.
-
-**Graph-based prerequisite analysis** identifies which concepts depend on previously learned topics.
-
-### Learning Workflow
+SkillForge uses a structured learning workflow to connect student performance with personalized practice.
 
 ```text
-Student Opens SkillForge
-           |
-           v
-    Diagnostic Assessment
-           |
-           v
-   Initial Mastery Estimates
-           |
-           v
-    Interactive Skill Tree
-           |
-           v
-  Personalized Recommendations
-           |
-           v
-      Adaptive Practice
-           |
-           v
-      Student Answers
-           |
-           v
-      BKT Mastery Update
-           |
-           v
-    Progress Saved to DB
-           |
-           v
-     Next Question Selected
+       Student Opens SkillForge
+                  |
+                  v
+          Diagnostic Assessment
+                  |
+                  v
+         Concept Mastery Update
+                  |
+                  v
+       Personalized Recommendations
+                  |
+                  v
+            Adaptive Practice
+                  |
+                  v
+           Question Submission
+                  |
+                  v
+         Bayesian Knowledge Tracing
+                  |
+                  v
+          Updated Mastery Estimate
+                  |
+                  v
+           Progress Tracking
+                  |
+                  v
+          Next Question Selection
 ```
 
 ### Bayesian Knowledge Tracing
 
-BKT is a probabilistic approach for estimating a learner's mastery of a skill based on observed responses.
+Bayesian Knowledge Tracing is a probabilistic method for estimating whether a learner has mastered a particular skill.
 
-SkillForge currently uses the following parameters:
+SkillForge updates mastery estimates based on question responses using four parameters:
 
-| Parameter | Value | Meaning |
-|-----------|-------|---------|
-| Initial mastery | 0.20 | Starting probability of knowing a concept |
-| Learning probability | 0.10 | Probability of learning between opportunities |
-| Guess probability | 0.20 | Probability of answering correctly without mastery |
-| Slip probability | 0.10 | Probability of answering incorrectly despite mastery |
+- **Initial mastery:** Estimated knowledge before practice.
+- **Learning probability:** Probability of acquiring knowledge between opportunities.
+- **Guess probability:** Probability of answering correctly without mastery.
+- **Slip probability:** Probability of answering incorrectly despite mastery.
 
-After each response, the learner's estimated mastery is updated.
+The implementation uses predefined BKT parameters and updates mastery estimates after question submissions.
 
-These parameters are currently predefined rather than trained on a dataset.
+### Prerequisite-Based Recommendations
+
+DSA concepts are represented as nodes in a directed graph, with edges representing prerequisite relationships.
+
+NetworkX is used to manage these dependencies.
+
+The recommendation system considers concept mastery and prerequisite eligibility to identify suitable learning topics.
 
 ### Adaptive Question Selection
 
-The adaptive practice engine considers:
+The adaptive practice engine selects questions based on:
 
-1. Concepts eligible under prerequisite rules.
+1. Prerequisite eligibility.
 2. Estimated concept mastery.
-3. Whether concepts have been practiced previously.
-4. How recently they were attempted.
-5. Available questions not already used in the current session.
+3. Previous practice activity.
+4. Question availability within the current session.
 
-The system prioritizes eligible concepts with lower estimated mastery and uses deterministic tie-breaking rules for question selection.
-
-This approach is currently rule-based and does not claim to be a trained recommendation model.
+This enables question selection to respond to changes in learner performance rather than following a fixed question order.
 
 ---
 
-## Current Dataset
+## Current Implementation
 
-The MVP currently includes:
+The MVP contains:
 
-- **8 DSA concepts**
-- **8 prerequisite relationships**
-- **25 curated multiple-choice questions**
-- Question explanations and concept associations
-
-The question bank is maintained through a structured import process.
-
-The dataset is intentionally limited in the MVP and will be expanded to cover a broader DSA curriculum.
+- 8 DSA concepts.
+- 8 directed prerequisite relationships.
+- 25 multiple-choice questions.
+- Concept-specific mastery tracking.
+- Six-question diagnostic assessments.
+- Five-question adaptive practice sessions.
+- Interactive prerequisite visualization.
+- Learning history and mastery charts.
+- Persistent assessment and practice sessions.
 
 ---
 
 ## Database and Backend
 
-SkillForge uses PostgreSQL to persist learning information across sessions.
+SkillForge uses PostgreSQL with SQLAlchemy for persistent data management.
 
-The backend supports:
+The backend handles:
 
-- Question and concept management.
-- Student progress and mastery records.
-- Question attempt history.
+- DSA concepts and question records.
+- Student question attempts.
+- Concept-level mastery estimates.
 - Diagnostic assessment sessions.
 - Adaptive practice sessions.
-- Persistent session recovery.
-- Idempotent question submissions.
-- Transactional updates and concurrency protection.
-- Version-controlled database migrations using Alembic.
+- Learning history.
+- Personalized recommendations.
 
-The current MVP uses a demonstration student identity. Individual user authentication is planned.
+Alembic manages database schema migrations.
+
+The application also includes submission validation, idempotency handling, and transactional database operations to maintain consistent learning records.
 
 ---
 
-## Testing
+## Testing and Validation
 
-The application includes automated tests for frontend and backend functionality.
+SkillForge includes automated tests covering its core backend and frontend functionality.
 
-At the current MVP milestone:
+**MVP verification results:**
 
-- **134 frontend tests**
-- **250 backend tests, plus 11 subtests**
-- TypeScript validation
-- ESLint checks
-- Frontend production build verification
-- Database migration verification
+- 250 backend tests passed, plus 11 subtests.
+- 134 frontend tests passed.
+- TypeScript validation passed.
+- ESLint checks passed.
+- Frontend production build passed.
+- Database migration verification completed.
 
-Testing covers core learning workflows, API behavior, assessment persistence, question submissions, and related functionality.
-
-Full manual end-to-end browser verification remains part of the next development milestone.
+Automated testing covers question submissions, learning workflows, session persistence, API behavior, and database operations.
 
 ---
 
@@ -259,21 +236,21 @@ Full manual end-to-end browser verification remains part of the next development
 
 ### Prerequisites
 
-Install:
-
 - Python
 - Node.js and npm
 - PostgreSQL
 - Git
 
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/Aarohi-06/skillforge-knowledge-tracing.git
 cd skillforge-knowledge-tracing
 ```
 
-### 2. Backend Setup
+### Backend Setup
+
+Navigate to the backend directory:
 
 ```bash
 cd backend
@@ -282,43 +259,33 @@ python -m venv .venv
 
 Activate the virtual environment.
 
-Windows PowerShell:
+**Windows PowerShell:**
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Install backend dependencies using the dependency file provided in the backend directory.
+Install the backend dependencies and configure the PostgreSQL connection according to the repository's backend configuration.
 
-Configure your local PostgreSQL connection using the project's backend configuration.
-
-Create the development database and apply Alembic migrations:
+Apply database migrations:
 
 ```bash
 alembic upgrade head
 ```
 
-Start the backend:
+Start the FastAPI server:
 
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-Backend API:
+API documentation is available at:
 
-```text
-http://localhost:8000
-```
+`http://localhost:8000/docs`
 
-Interactive API documentation:
+### Frontend Setup
 
-```text
-http://localhost:8000/docs
-```
-
-### 3. Frontend Setup
-
-Open another terminal:
+Open another terminal and navigate to the frontend directory:
 
 ```bash
 cd frontend
@@ -326,80 +293,19 @@ npm install
 npm run dev
 ```
 
-Open the local URL displayed by Vite, typically:
+Open the local development URL provided by Vite, typically:
 
-```text
-http://localhost:5173
-```
+`http://localhost:5173`
 
-**Note:** Database credentials, dependency installation, and initial data setup must follow the repository's backend configuration and import instructions. The application is currently intended for local development rather than production hosting.
+**Note:** The backend requires database configuration and initial question-bank data before the complete learning workflows can be used.
 
 ---
 
-## Project Roadmap
+## Project Status
 
-SkillForge is an actively evolving project.
+SkillForge is an actively developed functional MVP demonstrating adaptive DSA learning through knowledge tracing, prerequisite-based recommendations, and personalized practice.
 
-### Phase 1: Functional MVP
-- [x] Full-stack application architecture
-- [x] Interactive prerequisite-based skill tree
-- [x] Bayesian Knowledge Tracing
-- [x] Personalized learning recommendations
-- [x] Diagnostic assessment workflow
-- [x] Adaptive practice sessions
-- [x] Progress tracking and history
-- [x] Persistent PostgreSQL storage
-- [x] Automated frontend and backend tests
-
-### Phase 2: Product Expansion
-- [ ] Google OAuth and individual student accounts
-- [ ] Interactive application tour and onboarding
-- [ ] Expanded DSA curriculum
-- [ ] Larger and better-reviewed question bank
-- [ ] Improved question explanations
-- [ ] More comprehensive diagnostic assessments
-- [ ] Improved question difficulty calibration
-- [ ] Production deployment
-- [ ] End-to-end browser testing
-
-### Phase 3: Advanced Adaptive Learning
-- [ ] Data-driven estimation of BKT parameters
-- [ ] Evaluation against baseline learning strategies
-- [ ] Improved personalization and learning analytics
-- [ ] Spaced repetition and revision scheduling
-- [ ] User testing and learning-outcome evaluation
-
-The roadmap is subject to change as the project develops.
-
----
-
-## Current Limitations
-
-The current version is an MVP and has several known limitations:
-
-- Limited DSA concept and question coverage.
-- BKT parameters are predefined rather than learned from student data.
-- Diagnostic assessments cover only a subset of concepts.
-- Question explanations and learning resources require further review and expansion.
-- Authentication and multi-user account management are not yet implemented.
-- The application is not yet publicly deployed.
-- Real-world learning effectiveness has not yet been evaluated.
-
-These limitations are part of the planned development roadmap.
-
----
-
-## Project Goals
-
-SkillForge aims to evolve into a learning platform that helps students:
-
-- Understand what they know.
-- Identify what they need to improve.
-- Learn concepts in a meaningful order.
-- Practice questions suited to their current understanding.
-- Track progress through an adaptive learning journey.
-
-The long-term objective is to explore how knowledge tracing and prerequisite-aware recommendations can support more effective DSA learning.
+The repository contains the implementation of the current learning workflows, supporting backend services, database migrations, and automated tests.
 
 ---
 
@@ -407,11 +313,9 @@ The long-term objective is to explore how knowledge tracing and prerequisite-awa
 
 **Aarohi Nagdeote**
 
-B.Tech in Computer Science and Engineering (AI & Data Science)  
-Ramdeobaba University, Nagpur
 
 GitHub: [Aarohi-06](https://github.com/Aarohi-06)
 
 ---
 
-*SkillForge — Level up, one concept at a time.*
+*SkillForge — Forge your skills. Unlock your potential.*
